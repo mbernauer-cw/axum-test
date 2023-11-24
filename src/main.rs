@@ -14,10 +14,12 @@ use tokio::{
 };
 use tokio_stream::StreamExt as _;
 
+mod other;
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt().init();
-    let app = Router::new().route("/sse", get(sse_handler));
+    let app = Router::new().route("/sse", get(sse_handler)).merge(other::using_serve_dir());
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     tracing::info!("listening on {}", addr);
     axum::Server::bind(&addr)
